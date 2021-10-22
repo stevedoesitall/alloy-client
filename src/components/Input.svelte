@@ -7,7 +7,6 @@
 	export let placeholder
 	export let value
 	export let label
-	export let isDanger
 </script>
 
 <div class="user-input">
@@ -29,15 +28,6 @@
 			</select>
 		{:else if isDate}
 			<input {id} class="input" type="date" bind:value={params[value]} />
-		{/if}
-		{#if isDanger}
-			<div class="icon-text">
-				<span class="icon has-text-danger is-large">
-					<i class="fas fa-ban">
-						<ion-icon name="warning-outline" />
-					</i>
-				</span>
-			</div>
 		{/if}
 	</div>
 </div>

@@ -2,13 +2,8 @@
 	import Button from "./components/Button.svelte"
 	import Input from "./components/Input.svelte"
 	import inputObj from "../scripts/input-obj.js"
-	import {
-		validateEmail,
-		validateString,
-		validateZip,
-		validatePhone,
-		validateSSN,
-	} from "../scripts/validation.js"
+
+	let isValidForm = false
 
 	let params = {
 		name_first: "",
@@ -42,7 +37,6 @@
 	let buttonIsDisabled = true
 
 	$: if (params) {
-		console.log(inputObj)
 		buttonIsDisabled = Object.values(params).some((val) => val === "")
 	}
 
@@ -50,65 +44,7 @@
 	let statusUpdated = false
 	let inProgress = false
 
-	const setIsDanger = (className, action = "add") => {
-		if (action === "add") {
-			document.querySelector(className).classList.add("is-danger")
-		} else {
-			document.querySelector(className).classList.remove("is-danger")
-		}
-	}
-
 	const updateStatus = (event) => {
-		const isValidEmail = validateEmail(params.email_address)
-		const isValidFirstName = validateString(params.name_first)
-		const isValidLastName = validateString(params.name_last)
-		const isValidAddressOne = validateString(params.address_line_1)
-		const isValidZip = validateZip(params.address_postal_code)
-		const isValidPhone = validatePhone(params.phone_number)
-		const isValidSSN = validateSSN(params.document_ssn)
-
-		if (!isValidEmail) {
-			setIsDanger("#email-input", "emailAddress", "add")
-		} else {
-			setIsDanger("#email-input", "emailAddress", "remove")
-		}
-
-		if (!isValidFirstName) {
-			setIsDanger("#fn-input", "add")
-		} else {
-			setIsDanger("#fn-input", "remove")
-		}
-
-		if (!isValidLastName) {
-			setIsDanger("#ln-input", "add")
-		} else {
-			setIsDanger("#ln-input", "remove")
-		}
-
-		if (!isValidAddressOne) {
-			setIsDanger("#ad1-input", "add")
-		} else {
-			setIsDanger("#ad1-input", "remove")
-		}
-
-		if (!isValidZip) {
-			setIsDanger("#zip-input", "add")
-		} else {
-			setIsDanger("#zip-input", "remove")
-		}
-
-		if (!isValidSSN) {
-			setIsDanger("#ssn-input", "add")
-		} else {
-			setIsDanger("#ssn-input", "remove")
-		}
-
-		if (!isValidPhone) {
-			setIsDanger("#phone-input", "add")
-		} else {
-			setIsDanger("#phone-input", "remove")
-		}
-
 		currentStatus = event.detail.currentStatus
 		inProgress = event.detail.inProgress
 		statusUpdated = true
@@ -156,6 +92,13 @@
 					<p>Warning</p>
 				</div>
 				<div class="message-body">Your application was denied.</div>
+			</article>
+		{:else if currentStatus === "Has Errors"}
+			<article class="message is-danger">
+				<div class="message-header">
+					<p>Warning</p>
+				</div>
+				<div class="message-body">Please fix all errors.</div>
 			</article>
 		{:else if statusUpdated}
 			<article class="message is-danger">

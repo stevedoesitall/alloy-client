@@ -1,5 +1,12 @@
 <script>
 	import { createEventDispatcher } from "svelte"
+	import {
+		validateEmail,
+		validateString,
+		validateZip,
+		validatePhone,
+		validateSSN,
+	} from "../../scripts/validation.js"
 	export let disabled
 	export let title
 	export let params
@@ -8,6 +15,7 @@
 
 	let currentStatus
 	let inProgress = false
+	let isValidForm = false
 
 	$: {
 		if (currentStatus) {
@@ -15,22 +23,99 @@
 		}
 	}
 
+	const setIsDanger = (className, action = "add") => {
+		if (action === "add") {
+			document.querySelector(className).classList.add("is-danger")
+		} else {
+			document.querySelector(className).classList.remove("is-danger")
+		}
+	}
+
 	const sendData = async () => {
+		isValidForm = true
+		const isValidEmail = validateEmail(params.email_address)
+		const isValidFirstName = validateString(params.name_first)
+		const isValidLastName = validateString(params.name_last)
+		const isValidAddressOne = validateString(params.address_line_1)
+		const isValidZip = validateZip(params.address_postal_code)
+		const isValidPhone = validatePhone(params.phone_number)
+		const isValidSSN = validateSSN(params.document_ssn)
+
+		if (!isValidEmail) {
+			isValidForm = false
+			setIsDanger("#email-input", "emailAddress", "add")
+		} else {
+			setIsDanger("#email-input", "emailAddress", "remove")
+		}
+
+		if (!isValidFirstName) {
+			isValidForm = false
+			setIsDanger("#fn-input", "add")
+		} else {
+			setIsDanger("#fn-input", "remove")
+		}
+
+		if (!isValidLastName) {
+			isValidForm = false
+			setIsDanger("#ln-input", "add")
+		} else {
+			setIsDanger("#ln-input", "remove")
+		}
+
+		if (!isValidAddressOne) {
+			isValidForm = false
+			setIsDanger("#ad1-input", "add")
+		} else {
+			setIsDanger("#ad1-input", "remove")
+		}
+
+		if (!isValidZip) {
+			isValidForm = false
+			setIsDanger("#zip-input", "add")
+		} else {
+			setIsDanger("#zip-input", "remove")
+		}
+
+		if (!isValidSSN) {
+			isValidForm = false
+			setIsDanger("#ssn-input", "add")
+		} else {
+			setIsDanger("#ssn-input", "remove")
+		}
+
+		if (!isValidPhone) {
+			isValidForm = false
+			setIsDanger("#phone-input", "add")
+		} else {
+			setIsDanger("#phone-input", "remove")
+		}
+
 		inProgress = true
 
 		params.document_ssn = params.document_ssn.replaceAll("-", "")
 
-		const data = await fetch("http://localhost:8081/signup", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(params),
-		})
+		if (isValidForm) {
+			const data = await fetch("https://alloy-server.herokuapp.com/signup", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(params),
+			})
 
-		const response = await data.json()
-		inProgress = false
-		currentStatus = response.response.outcome
+			if (data.status >= 400) {
+				inProgress = false
+				currentStatus = "Error"
+				return true
+			}
+
+			const response = await data.json()
+			inProgress = false
+			currentStatus = response.response.outcome
+		} else {
+			inProgress = false
+			currentStatus = "Has Errors"
+		}
 	}
 </script>
 
