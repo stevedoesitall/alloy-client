@@ -112,9 +112,11 @@
 			const formInputs = document.querySelector("#form-inputs")
 			const formButtons = document.querySelector("#form-buttons")
 			const reloadButton = document.querySelector("#reload-button")
+			const blurb = document.querySelector("#blurb")
 
 			formInputs.classList.add("hidden")
 			formButtons.classList.add("hidden")
+			blurb.classList.add("hidden")
 			reloadButton.classList.remove("hidden")
 
 			const response = await data.json()

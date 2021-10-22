@@ -60,6 +60,14 @@
 	<img alt="1st Bank of Hill Valley" src="./images/logo.png" />
 </main>
 
+<article id="blurb" class="column is-full">
+	<p class="is-size-4">
+		Our investors literally go back in time to invest your money! Want to invest
+		in Apple, Amazon, or Google for pennies on the dollar? You've come to the
+		right bank.
+	</p>
+</article>
+
 <div id="credentials-form">
 	<div id="form-inputs" class="column is-full">
 		{#each Object.keys(inputObj) as key}
