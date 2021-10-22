@@ -56,7 +56,7 @@
 	}
 </script>
 
-<main>
+<main id="hero-image" class="column is-full">
 	<img alt="1st Bank of Hill Valley" src="./images/logo.png" />
 </main>
 
