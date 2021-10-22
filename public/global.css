@@ -62,6 +62,10 @@ button:focus {
 	border-color: #666;
 }
 
+.hidden {
+	display: none !important;
+}
+
 .user-input {
 	padding-top: .5em;
 }

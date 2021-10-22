@@ -3,8 +3,6 @@
 	import Input from "./components/Input.svelte"
 	import inputObj from "../scripts/input-obj.js"
 
-	let isValidForm = false
-
 	let params = {
 		name_first: "",
 		name_last: "",
@@ -37,7 +35,10 @@
 	let buttonIsDisabled = true
 
 	$: if (params) {
-		buttonIsDisabled = Object.values(params).some((val) => val === "")
+		const paramKeys = Object.keys(params)
+		buttonIsDisabled = paramKeys.some(
+			(key) => params[key] === "" && key !== "address_line_2"
+		)
 	}
 
 	let currentStatus
@@ -49,6 +50,10 @@
 		inProgress = event.detail.inProgress
 		statusUpdated = true
 	}
+
+	const refresh = () => {
+		window.location.reload()
+	}
 </script>
 
 <main>
@@ -56,7 +61,7 @@
 </main>
 
 <div id="credentials-form">
-	<div class="column is-one-third">
+	<div id="form-inputs" class="column is-full">
 		{#each Object.keys(inputObj) as key}
 			<Input
 				bind:params
@@ -66,12 +71,14 @@
 				value={inputObj[key].value}
 				isDropdown={inputObj[key].isDropdown}
 				isDate={inputObj[key].isDate}
-				isDanger={inputObj[key].isDanger}
 			/>
 		{/each}
 	</div>
 
-	<div class="column is-one-third">
+	<div class="column is-full">
+		{#if inProgress}
+			<progress class="progress is-small is-primary" max="100">15%</progress>
+		{/if}
 		{#if currentStatus === "Approved"}
 			<article class="message is-success">
 				<div class="message-header">
@@ -108,22 +115,27 @@
 				<div class="message-body">Something went wrong.</div>
 			</article>
 		{/if}
-
-		{#if inProgress}
-			<progress class="progress is-small is-primary" max="100">15%</progress>
-		{/if}
 	</div>
 
-	<Button
-		disabled={buttonIsDisabled}
-		title="Submit"
-		on:handleStatus={updateStatus}
-		{params}
-	/>
+	<div id="form-buttons" class="has-text-centered">
+		<Button
+			disabled={buttonIsDisabled}
+			title="Submit"
+			on:handleStatus={updateStatus}
+			{params}
+		/>
 
-	<button class="has-text-weight-bold button is-secondary" on:click={autoInput}
-		>Feeling Lazy?</button
-	>
+		<button
+			class="has-text-weight-bold button is-secondary"
+			on:click={autoInput}>Feeling Lazy?</button
+		>
+	</div>
+
+	<div id="reload-button" class="content hidden has-text-centered">
+		<button class="has-text-weight-bold button is-primary" on:click={refresh}
+			>Refresh</button
+		>
+	</div>
 </div>
 
 <style>

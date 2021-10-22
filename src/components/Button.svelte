@@ -23,11 +23,11 @@
 		}
 	}
 
-	const setIsDanger = (className, action = "add") => {
+	const setIsDanger = (idName, action = "add") => {
 		if (action === "add") {
-			document.querySelector(className).classList.add("is-danger")
+			document.querySelector(idName).classList.add("is-danger")
 		} else {
-			document.querySelector(className).classList.remove("is-danger")
+			document.querySelector(idName).classList.remove("is-danger")
 		}
 	}
 
@@ -43,9 +43,9 @@
 
 		if (!isValidEmail) {
 			isValidForm = false
-			setIsDanger("#email-input", "emailAddress", "add")
+			setIsDanger("#email-input", "add")
 		} else {
-			setIsDanger("#email-input", "emailAddress", "remove")
+			setIsDanger("#email-input", "remove")
 		}
 
 		if (!isValidFirstName) {
@@ -108,6 +108,14 @@
 				currentStatus = "Error"
 				return true
 			}
+
+			const formInputs = document.querySelector("#form-inputs")
+			const formButtons = document.querySelector("#form-buttons")
+			const reloadButton = document.querySelector("#reload-button")
+
+			formInputs.classList.add("hidden")
+			formButtons.classList.add("hidden")
+			reloadButton.classList.remove("hidden")
 
 			const response = await data.json()
 			inProgress = false
